@@ -1,0 +1,15 @@
+database:
+  host: localhost
+  port: 5432
+  user: myuser
+  password: mypassword
+  dbname: mydatabase
+  sslmode: disable
+  schema: public
+
+server:
+  port: 1323
+  allowOrigins:
+    - mymy
+  timeout: 30s
+  bodyLimit: "1048576"
