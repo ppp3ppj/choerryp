@@ -10,6 +10,6 @@ database:
 server:
   port: 1323
   allowOrigins:
-    - mymy
-  timeout: 30s
+    - "*"
+  timeout: 30
   bodyLimit: "1048576"

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"sync"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -37,8 +38,14 @@ func NewEchoServer(conf *config.Config) *echoServer {
 }
 
 func (s *echoServer) Start() {
+    timeOutMiddleware := getTimeOutMiddleware(s.conf.Server.Timeout)
+    corsMiddleware := getCORSMiddleware(s.conf.Server.AllowOrigins)
+
     s.app.Use(middleware.Recover())
     s.app.Use(middleware.Logger())
+
+    s.app.Use(timeOutMiddleware)
+    s.app.Use(corsMiddleware)
 
 
     s.app.GET("/v1/health", s.healthCheck)
@@ -55,4 +62,21 @@ func (s *echoServer) httpListening() {
 
 func (s *echoServer) healthCheck(c echo.Context) error {
     return c.String(http.StatusOK, "OK")
+}
+
+func getTimeOutMiddleware(timeout time.Duration) echo.MiddlewareFunc {
+    return middleware.TimeoutWithConfig(middleware.TimeoutConfig{
+        Skipper: middleware.DefaultSkipper,
+        ErrorMessage: "Error: Request timeout.",
+        Timeout: timeout * time.Second,
+    })
+}
+
+func getCORSMiddleware(allowOrigins []string) echo.MiddlewareFunc {
+    return middleware.CORSWithConfig(middleware.CORSConfig{
+        Skipper: middleware.DefaultSkipper,
+        AllowOrigins: allowOrigins,
+        AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.PATCH, echo.DELETE},
+        AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+    })
 }
