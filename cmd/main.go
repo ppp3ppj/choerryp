@@ -11,6 +11,7 @@ import (
 func main() {
     conf := config.ConfigGetting()
     db := databases.NewPostgresDatabase(conf.Database)
+    defer db.Close()
     fmt.Println(db)
     fmt.Println(conf)
     fmt.Println(conf.Database.Password)
