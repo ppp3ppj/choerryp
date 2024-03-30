@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/ppp3ppj/choerryp/internal/config"
 	"github.com/ppp3ppj/choerryp/internal/databases"
@@ -11,7 +12,11 @@ import (
 func main() {
     conf := config.ConfigGetting()
     db := databases.NewPostgresDatabase(conf.Database)
-    defer db.DB.Close()
+    defer func() {
+        if err := db.Close(); err != nil {
+            log.Fatalf("Failed to close database connection: %v", err)
+        }
+    }()
     fmt.Println(db)
     fmt.Println(conf)
     fmt.Println(conf.Database.Password)

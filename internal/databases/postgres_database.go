@@ -49,3 +49,14 @@ func NewPostgresDatabase(conf *config.Database) *postgresDatabase {
 func (db *postgresDatabase) Connect() *sqlx.DB {
     return postgresDatabaseInstance.DB
 }
+
+// Close closes the database connection
+func (db *postgresDatabase) Close() error {
+    if postgresDatabaseInstance != nil && postgresDatabaseInstance.DB != nil {
+        if err := postgresDatabaseInstance.DB.Close(); err != nil {
+            return err
+        }
+        log.Println("Closed postgres database connection")
+    }
+    return nil
+}
