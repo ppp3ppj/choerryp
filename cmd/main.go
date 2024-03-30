@@ -11,12 +11,12 @@ import (
 func main() {
     conf := config.ConfigGetting()
     db := databases.NewPostgresDatabase(conf.Database)
-    defer db.Close()
+    defer db.DB.Close()
     fmt.Println(db)
     fmt.Println(conf)
     fmt.Println(conf.Database.Password)
 
-    server := server.NewEchoServer(conf)
+    server := server.NewEchoServer(conf, db)
     server.Start()
 }
 

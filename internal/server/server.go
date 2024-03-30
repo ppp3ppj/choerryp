@@ -10,16 +10,19 @@ import (
 	"syscall"
 	"time"
 
+//	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 	"github.com/ppp3ppj/choerryp/internal/config"
+	"github.com/ppp3ppj/choerryp/internal/databases"
 )
 
 
 type echoServer struct {
     app *echo.Echo
     conf *config.Config
+    db databases.Database
 }
 
 var (
@@ -27,14 +30,15 @@ var (
     once  sync.Once
 )
 
-func NewEchoServer(conf *config.Config) *echoServer {
+func NewEchoServer(conf *config.Config, db databases.Database) *echoServer {
     echoApp := echo.New()
     echoApp.Logger.SetLevel(log.DEBUG)
 
     once.Do(func() {
         server = &echoServer{
-            app: echo.New(),
+            app: echoApp,
             conf: config.ConfigGetting(),
+            db: db,
         }
     })
 
@@ -53,6 +57,8 @@ func (s *echoServer) Start() {
 
 
     s.app.GET("/v1/health", s.healthCheck)
+
+    s.initUserManagingRouter()
 
     // Graceful Shutdown
     quitCh := make(chan os.Signal, 1)

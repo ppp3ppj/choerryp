@@ -47,5 +47,5 @@ func NewPostgresDatabase(conf *config.Database) *postgresDatabase {
 }
 
 func (db *postgresDatabase) Connect() *sqlx.DB {
-    return db.DB
+    return postgresDatabaseInstance.DB
 }
