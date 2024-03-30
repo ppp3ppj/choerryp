@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/ppp3ppj/choerryp/internal/config"
@@ -17,9 +16,6 @@ func main() {
             log.Fatalf("Failed to close database connection: %v", err)
         }
     }()
-    fmt.Println(db)
-    fmt.Println(conf)
-    fmt.Println(conf.Database.Password)
 
     server := server.NewEchoServer(conf, db)
     server.Start()
