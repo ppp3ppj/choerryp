@@ -6,9 +6,9 @@ import (
 	"sync"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/ppp3ppj/choerryp/internal/config"
+	"github.com/ppp3ppj/choerryp/config"
 
-    _ "github.com/jackc/pgx/v5/stdlib" // Standard library bindings for pgx
+	_ "github.com/jackc/pgx/v5/stdlib" // Standard library bindings for pgx
 )
 
 type postgresDatabase struct {

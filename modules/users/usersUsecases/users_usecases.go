@@ -1,8 +1,8 @@
 package usersUsecases
 
 import (
-	"github.com/ppp3ppj/choerryp/pkg/users"
-	"github.com/ppp3ppj/choerryp/pkg/users/usersRepositories"
+	"github.com/ppp3ppj/choerryp/modules/users"
+	"github.com/ppp3ppj/choerryp/modules/users/usersRepositories"
 )
 
 type IUserUsecase interface {

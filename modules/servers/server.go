@@ -13,8 +13,11 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
-	"github.com/ppp3ppj/choerryp/internal/config"
-	"github.com/ppp3ppj/choerryp/internal/databases"
+	"github.com/ppp3ppj/choerryp/config"
+	"github.com/ppp3ppj/choerryp/modules/users/usersHandlers"
+	"github.com/ppp3ppj/choerryp/modules/users/usersRepositories"
+	"github.com/ppp3ppj/choerryp/modules/users/usersUsecases"
+	"github.com/ppp3ppj/choerryp/pkg/databases"
 )
 
 
@@ -47,17 +50,26 @@ func NewEchoServer(conf *config.Config, db databases.Database) *echoServer {
 func (s *echoServer) Start() {
     timeOutMiddleware := getTimeOutMiddleware(s.conf.Server.Timeout)
     corsMiddleware := getCORSMiddleware(s.conf.Server.AllowOrigins)
+    bodyLimitMiddleware := getBodyLimitMiddleware(s.conf.Server.BodyLimit)
 
     s.app.Use(middleware.Recover())
-    s.app.Use(middleware.Logger())
 
+    s.app.Use(middleware.Logger())
     s.app.Use(timeOutMiddleware)
     s.app.Use(corsMiddleware)
+    s.app.Use(bodyLimitMiddleware)
 
 
     s.app.GET("/v1/health", s.healthCheck)
 
-    s.initUserManagingRouter()
+    userRepo := usersRepositories.UsersRepository(s.db)
+    userUc := usersUsecases.UsersUsecase(userRepo)
+    userH := usersHandlers.UsersHandler(s.app, userUc)
+
+    s.app.GET("/", func(c echo.Context) error {
+        userH.Signup(c)
+        return c.String(http.StatusOK, "Hello, World!")
+    })
 
     // Graceful Shutdown
     quitCh := make(chan os.Signal, 1)
@@ -104,4 +116,8 @@ func getCORSMiddleware(allowOrigins []string) echo.MiddlewareFunc {
         AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.PATCH, echo.DELETE},
         AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
     })
+}
+
+func getBodyLimitMiddleware(bodyLimit string) echo.MiddlewareFunc {
+    return middleware.BodyLimit(bodyLimit)
 }
