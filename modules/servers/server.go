@@ -13,8 +13,11 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
-	"github.com/ppp3ppj/choerryp/internal/config"
-	"github.com/ppp3ppj/choerryp/internal/databases"
+	"github.com/ppp3ppj/choerryp/config"
+	"github.com/ppp3ppj/choerryp/modules/users/usersHandlers"
+	"github.com/ppp3ppj/choerryp/modules/users/usersRepositories"
+	"github.com/ppp3ppj/choerryp/modules/users/usersUsecases"
+	"github.com/ppp3ppj/choerryp/pkg/databases"
 )
 
 
@@ -57,7 +60,14 @@ func (s *echoServer) Start() {
 
     s.app.GET("/v1/health", s.healthCheck)
 
-    s.initUserManagingRouter()
+    userRepo := usersRepositories.UsersRepository(s.db)
+    userUc := usersUsecases.UsersUsecase(userRepo)
+    userH := usersHandlers.UsersHandler(s.app, userUc)
+
+    s.app.GET("/", func(c echo.Context) error {
+        userH.Signup(c)
+        return c.String(http.StatusOK, "Hello, World!")
+    })
 
     // Graceful Shutdown
     quitCh := make(chan os.Signal, 1)
