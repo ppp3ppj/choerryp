@@ -11,5 +11,5 @@ server:
   port: 1323
   allowOrigins:
     - "*"
-  timeout: 30
-  bodyLimit: "1048576"
+  timeout: 30 # Seconds
+  bodyLimit: "10M" # MiB

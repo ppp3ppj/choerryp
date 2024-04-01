@@ -1,8 +1,6 @@
 package users
 
 import (
-	"fmt"
-
 	"golang.org/x/crypto/bcrypt"
 )
 

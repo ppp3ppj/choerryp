@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/ppp3ppj/choerryp/pkg/users"
-	"github.com/ppp3ppj/choerryp/pkg/users/usersUsecases"
+	"github.com/ppp3ppj/choerryp/modules/users"
+	"github.com/ppp3ppj/choerryp/modules/users/usersUsecases"
 )
 
 type userHandlerErrCode string

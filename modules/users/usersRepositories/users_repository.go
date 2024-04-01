@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/jmoiron/sqlx"
-	"github.com/ppp3ppj/choerryp/pkg/users"
+	"github.com/ppp3ppj/choerryp/modules/users"
+	"github.com/ppp3ppj/choerryp/pkg/databases"
 )
 
 type IUserRepository interface {
@@ -14,12 +14,12 @@ type IUserRepository interface {
 }
 
 type userRepository struct {
-    Db *sqlx.DB
+    db databases.Database
 }
 
-func UsersRepository(db *sqlx.DB) IUserRepository {
+func UsersRepository(db databases.Database) IUserRepository {
     return &userRepository{
-        Db: db,
+        db: db,
     }
 }
 
@@ -32,7 +32,7 @@ func (r *userRepository) InsertUser(u *users.UserRegisterReq) error {
     }
 
     query := `INSERT INTO users (email, password, username, first_name, last_name) VALUES ($1, $2, $3, $4, $5) RETURNING "id"`
-    if err := r.Db.QueryRowContext(
+    if err := r.db.Connect().QueryRowContext(
         ctx,
         query,
         u.Email,
