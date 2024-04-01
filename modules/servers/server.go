@@ -50,12 +50,14 @@ func NewEchoServer(conf *config.Config, db databases.Database) *echoServer {
 func (s *echoServer) Start() {
     timeOutMiddleware := getTimeOutMiddleware(s.conf.Server.Timeout)
     corsMiddleware := getCORSMiddleware(s.conf.Server.AllowOrigins)
+    bodyLimitMiddleware := getBodyLimitMiddleware(s.conf.Server.BodyLimit)
 
     s.app.Use(middleware.Recover())
-    s.app.Use(middleware.Logger())
 
+    s.app.Use(middleware.Logger())
     s.app.Use(timeOutMiddleware)
     s.app.Use(corsMiddleware)
+    s.app.Use(bodyLimitMiddleware)
 
 
     s.app.GET("/v1/health", s.healthCheck)
@@ -114,4 +116,8 @@ func getCORSMiddleware(allowOrigins []string) echo.MiddlewareFunc {
         AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.PATCH, echo.DELETE},
         AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
     })
+}
+
+func getBodyLimitMiddleware(bodyLimit string) echo.MiddlewareFunc {
+    return middleware.BodyLimit(bodyLimit)
 }
