@@ -1,4 +1,4 @@
-package server
+package servers
 
 import (
 	"context"
@@ -65,6 +65,8 @@ func (s *echoServer) Start() {
     userRepo := usersRepositories.UsersRepository(s.db)
     userUc := usersUsecases.UsersUsecase(userRepo)
     userH := usersHandlers.UsersHandler(s.app, userUc)
+
+    s.initUserRouter()
 
     s.app.GET("/", func(c echo.Context) error {
         userH.Signup(c)

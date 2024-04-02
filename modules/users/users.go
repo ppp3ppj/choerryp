@@ -14,12 +14,12 @@ type User struct {
 }
 
 type UserRegisterReq struct {
-    Id string `db:"id"`
-    Email string `db:"email"`
-    Password string `db:"password"`
-    Username string `db:"username"`
-    Firstname string `db:"first_name"`
-    Lastname string `db:"last_name"`
+    Id string `db:"id" json:"id" form:"id"`
+    Email string `db:"email" json:"email" form:"email"`
+    Password string `db:"password" json:"password" form:"password"`
+    Username string `db:"username" json:"username" form:"username"`
+    Firstname string `db:"first_name" json:"first_name" form:"first_name"`
+    Lastname string `db:"last_name" json:"last_name" form:"last_name"`
 }
 
 func (obj *UserRegisterReq) BcryptPassword() error {

@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/ppp3ppj/choerryp/config"
-	server "github.com/ppp3ppj/choerryp/modules/servers"
+	"github.com/ppp3ppj/choerryp/modules/servers"
 	"github.com/ppp3ppj/choerryp/pkg/databases"
 )
 
@@ -18,7 +18,7 @@ func main() {
         }
     }()
 
-    server := server.NewEchoServer(conf, db)
+    server := servers.NewEchoServer(conf, db)
     server.Start()
 }
 

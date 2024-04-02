@@ -32,13 +32,11 @@ func UsersHandler(ctx *echo.Echo, usersUsecase usersUsecases.IUserUsecase) IUser
 }
 
 func (h *userHandler) Signup(ctx echo.Context) error {
-    fmt.Println("signup")
     req := new(users.UserRegisterReq)
-    req.Username = "pppp"
-    req.Password = "123456"
-    req.Firstname = "pppp"
-    req.Lastname = "pppp"
-    req.Email = "pppp"
+
+    if err := ctx.Bind(req); err != nil {
+        return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("failed to bind request: %v", err))
+    }
 
     err := h.usersUsecase.InsertUser(req)
     if err != nil {
